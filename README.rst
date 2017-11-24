@@ -2,7 +2,7 @@
 Connexion Example REST Service
 ==============================
 
-This example application implements a very basic "pet shop" REST service using the `Connexion`_ Python library.
+This example application expands on the very basic "pet shop" REST service using the `Connexion`_ Python library by adding a PostgreSQL backend and Pony ORM.
 
 Connexion is a framework on top of Flask_ to automagically handle your REST API requests
 based on `Swagger 2.0 Specification`_ files in YAML.
@@ -44,56 +44,18 @@ The example application only needs very few files:
 * ``test.sh``: shell script to execute example HTTP requests against the pet shop API
 
 
-Running Locally
-===============
-
-You can run the Python application directly on your local operating system:
-
-.. code-block:: bash
-
-    $ sudo pip3 install -r requirements.txt
-    $ ./app.py # start the HTTP server
-    $ xdg-open http://localhost:8080/ui/
-    $ ./test.sh # do some test HTTP requests
-
-
-Running with Docker
+Running with Docker-Compose
 ===================
 
 You can build the example application as a Docker image and run it:
 
 .. code-block:: bash
 
-    $ docker build -t connexion-example .
-    $ docker run -d -p 8080:8080 connexion-example
+    $ docker-compose up -d pets-db
+    $ docker-compose up -d pets-service
     $ ./test.sh # do some test HTTP requests
 
 
-Using OAuth2 Security
-=====================
-
-To enable OAuth2 security (token verification), you need to pass the URL to the "tokeninfo" endpoint:
-
-.. code-block:: bash
-
-    $ docker run -d -p 8080:8080 -e HTTP_TOKENINFO_URL=https://auth.example.org/tokeninfo connexion-example
-
-Using Connexion with a WSGI container
-=====================================
-
-You can use the Flask WSGI app with any WSGI container, e.g. `using Flask with uWSGI`_:
-
-.. code-block:: bash
-
-    $ sudo pip3 install uwsgi
-    $ uwsgi --http :8080 -w app
-
-You can run uwsgi with a large number of worker processes to get high concurrency.
-This obviously makes no sense for the in-memory pet store example (every worker would have its own pet store dictionary):
-
-.. code-block:: bash
-
-    $ uwsgi --http :8080 -w app -p 16  # use 16 worker processes
 
 See the `uWSGI documentation`_ for more information.
 

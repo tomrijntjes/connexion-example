@@ -1,0 +1,21 @@
+version: '2.1'
+
+services:
+  pets-service:
+    build: .
+    ports:
+      - "8080:8080" # expose ports - HOST:CONTAINER
+    env_file:
+      - .env
+    links:
+      - pets-db
+
+  pets-db:
+    restart: always 
+    image: postgres:latest
+    env_file:
+      - .env
+    volumes:
+    - ./postgres-data:/var/lib/postgresql/data
+    ports:
+    - "5432:5432" # expose ports - HOST:CONTAINER

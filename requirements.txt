@@ -1,2 +1,4 @@
 connexion>=1.0.31
 gevent>=1.1b1
+psycopg2
+pony

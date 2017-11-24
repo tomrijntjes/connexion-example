@@ -1,44 +1,55 @@
 #!/usr/bin/env python3
+import os
 import connexion
+from pony.orm import *
+
 import datetime
 import logging
 
 from connexion import NoContent
 
-# our memory-only pet storage
-PETS = {}
+db = Database(provider='postgres', user=os.environ['POSTGRES_USER'], password=os.environ['POSTGRES_PASSWORD'], host='connexionexample_pets-db_1', database='')
 
 
+class Pet(db.Entity):
+    id = PrimaryKey(int, auto=True)
+    name = Required(str)
+    created = Optional(datetime.datetime)
+    animal_type = Required(str)
+
+db.generate_mapping(create_tables=True)
+
+
+@db_session
 def get_pets(limit, animal_type=None):
-    return [pet for pet in PETS.values() if not animal_type or pet['animal_type'] == animal_type][:limit]
+    pets = select(p for p in Pet)
+    return [pet.to_dict() for pet in pets]
 
-
+@db_session
 def get_pet(pet_id):
-    pet = PETS.get(pet_id)
-    return pet or ('Not found', 404)
+    try:
+        pet = Pet[pet_id].to_dict()
+        return pet 
+    except ObjectNotFound:
+        return ('Not found', 404)
 
-
+@db_session
 def put_pet(pet_id, pet):
-    exists = pet_id in PETS
-    pet['id'] = pet_id
+    logging.info(pet_id)
+    logging.info(pet)
     if exists:
         logging.info('Updating pet %s..', pet_id)
-        PETS[pet_id].update(pet)
+        Pet(id=pet_id,name=pet['name'],animal_type=pet['animal_type'])
     else:
         logging.info('Creating pet %s..', pet_id)
-        pet['created'] = datetime.datetime.utcnow()
-        PETS[pet_id] = pet
+        Pet(id=pet_id,name=pet['name'],animal_type=pet['animal_type'], created=datetime.datetime.utcnow())
     return NoContent, (200 if exists else 201)
 
-
+@db_session
 def delete_pet(pet_id):
-    if pet_id in PETS:
-        logging.info('Deleting pet %s..', pet_id)
-        del PETS[pet_id]
-        return NoContent, 204
-    else:
-        return NoContent, 404
-
+    logging.info('Deleting pet %s..', pet_id)
+    Pet[pet_id].delete()
+    return NoContent, 204
 
 logging.basicConfig(level=logging.INFO)
 app = connexion.App(__name__)

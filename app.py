@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import os
-<<<<<<< HEAD
 import datetime
 import logging
 import connexion

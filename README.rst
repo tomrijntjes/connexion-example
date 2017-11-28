@@ -2,7 +2,7 @@
 Connexion Example REST Service
 ==============================
 
-This example application expands on the very basic "pet shop" REST service using the `Connexion`_ Python library by adding a PostgreSQL backend and Pony ORM.
+This example application expands on the very basic "pet shop" REST service using the `Connexion`_ Python library by adding a MySQL backend and Pony ORM.
 
 Connexion is a framework on top of Flask_ to automagically handle your REST API requests
 based on `Swagger 2.0 Specification`_ files in YAML.

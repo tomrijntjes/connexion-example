@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+<<<<<<< HEAD
 import datetime
 import logging
 import connexion
@@ -60,6 +61,7 @@ def deleteUser(user_id):
     logging.info('Deleting user %s..', user_id)
     Pet[user_id].delete()
     return NoContent, 204
+
 
 
 

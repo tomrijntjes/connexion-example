@@ -1,0 +1,22 @@
+version: '2.1'
+
+services:
+  users-service:
+    build: .
+    ports:
+      - "8080:8080" # expose ports - HOST:CONTAINER
+    env_file:
+      - .env
+    links:
+      - users-db
+
+  users-db:
+    restart: always 
+    image: mysql:latest
+    env_file:
+      - .env
+    volumes:
+    - ./data/db:/var/lib/mysql
+    - ./init:/docker-entrypoint-initdb.d/
+    ports:
+    - "3306:3306" # expose ports - HOST:CONTAINER
